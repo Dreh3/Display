@@ -33,9 +33,11 @@ project(display C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+
+
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(display display.c )
+add_executable(display display.c ssd1306.c)
 
 pico_set_program_name(display "display")
 pico_set_program_version(display "0.1")
@@ -46,17 +48,19 @@ pico_enable_stdio_usb(display 1)
 
 # Add the standard library to the build
 target_link_libraries(display
-        pico_stdlib)
+        pico_stdlib
+        hardware_pio
+        hardware_i2c
+        )
 
 # Add the standard include files to the build
 target_include_directories(display PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
-# Add any user requested libraries
-target_link_libraries(display 
-        
-        )
+#Gerar arquivo cabeçalho pio
+pico_generate_pio_header(${CMAKE_PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/pio_matrix.pio)
+
 
 pico_add_extra_outputs(display)
 
