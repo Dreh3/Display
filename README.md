@@ -33,8 +33,11 @@ __Uma breve explicação do desenvolvimento e resultados obtidos podem ser visto
 O projeto permite utilizar os botões A e B para manipular os leds Azul e Verde, respectivamente. Ambos os botões tem a funcionalidade de alternar os estados de seus respectivos leds. Por exemplo, ao iniciar o código pela primeira vez, todos os leds estão desligados, assim, pressioanando o botão A, o led verde é ligado e, se pressionado novamente, o led é desligado. O mesmo acontece com o botão B. Um detalhe a se ressaltar, é que mensagens informativas aparecem no dispplay indicando a mundança de estados dos leds.
 
 Outra funcionalidade consiste em enviar uma frase de até 8 caracteres pelo Serial Monitor que será mostrada no display da placa. É necessário selecionar o Line Ending do Vs Code com a opção LF para permitir a leitura do enter (\n) e assim a leitura dos caracteres será facilitada. Instruções abaixo:
-```bash![line ending](https://github.com/user-attachments/assets/9a5a91d0-33e1-454a-9edb-52a6e12c4934)
-O led vermelho pica quando uma nova mensagem é digitada.
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/9a5a91d0-33e1-454a-9edb-52a6e12c4934" alt="line ending" width="300"/>
+</div>
+
+O led vermelho pisca quando uma nova mensagem é digitada.
 
 A última funcionalidade consiste em mostrar na matriz de leds 5x5 um desenho correspondente aos números de 0 a 9 quando um caractere isolado contendo um número for digitado.
 
