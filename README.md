@@ -26,7 +26,7 @@ __As funcionalidade básicas especificadas para a atividade são:__
 
 __Uma breve explicação do desenvolvimento e resultados obtidos podem ser vistos no vídeo endereçado no seguine link: [Aplicação de Interaces de Comunicação Serial]().__
 
-## Detalhamento Do Desenvolvimento
+## Detalhamento Do Projeto
 
 ### 1. Explicação do funcionamento
 
