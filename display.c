@@ -1,6 +1,22 @@
+//Código desenvolvido por Andressa Sousa Fonseca
+
+/*
+O presente código utiliza interrupções para executar funções para os botões:
+    O botão A ao ser pressionado alterna o estado do led verde.
+    O botão B ao ser pressionado alterna o estado do led azul.
+Já o código principal tem as seguintes funcionalidades:
+    1 - É possível entrar com uma String de até 8 caracteres pelo monitor serial,
+        esse string será exibida no display.
+    2 - Caso seja digitado apenas um número, isoladamente, ele será exibido na 
+        matriz de leds 5x5.
+Ademais, a ações de mudança dos leds também sinalizadas por mensagens no display.
+E ao digitar nova mensagem o Led Vermelho pisca.
+*/
+
 #include <stdio.h>
-#include <string.h>
+#include <string.h> //Para manipular strings
 #include "pico/stdlib.h"
+
 #include "hardware/timer.h" //Deboucing e interrupções
 
 //Para o display
@@ -8,15 +24,15 @@
 #include "ssd1306.h"
 #include "font.h"
 #define I2C_PORT i2c1
-#define I2C_SDA 14
-#define I2C_SCL 15
+#define I2C_SDA 14 //pinos para comunicação I2C
+#define I2C_SCL 15 //pinos para comunicação I2C
 #define endereco 0x3C
 ssd1306_t ssd; // Inicializa a estrutura do display
 
 //Arquivo .pio
 #include "pio_matrix.pio.h"
-#define IS_RGBW false
-#define MatrizLeds 7
+#define IS_RGBW false 
+#define MatrizLeds 7 //Pino para matriz de leds
 
 PIO pio = pio0;
 int sm =0;
@@ -104,10 +120,10 @@ void acender_leds(Matriz_leds matriz){
 };
 
 //Função com os frames dos números
-void numeros(char numero){
+void numeros(char numero[]){
 
     //Declarando variáveis necessárias para modificar intensidade
-    int inten =1, inten2 =0.5;
+    int inten =4, inten2 =2;
 
     //Definindo cores e tonalidades
     COR_RGB apagado = {0.0,0.0,0.0};
@@ -123,207 +139,176 @@ void numeros(char numero){
     COR_RGB magentaClaro = {0.25*inten2,0.0,0.25*inten2};
 
 
-    //Foram estabelecidos 6 frames para cada um dos números
+    //Foi estabelecido 1 frame para cada um dos números
 
-    //Matriz que mostrará o zero com transição de tonalidade da esquerda para a direita
+    //Matriz que mostrará o zero
     Matriz_leds zero =
-        {{apagado, vermelhoClaro, vermelhoClaro, vermelhoClaro, apagado},
-        {vermelhoClaro, apagado, apagado,apagado, vermelhoClaro},
-        {vermelhoClaro, apagado, vermelhoClaro,apagado, vermelhoClaro},
-        {vermelhoClaro, apagado, apagado,apagado, vermelhoClaro},
-        {apagado, vermelhoClaro, vermelhoClaro, vermelhoClaro,apagado}};
-    //Matriz que mostrará o um com transição de tonalidade da esquerda para a direita
+        {{apagado, vermelhoClaro, vermelhoClaro, vermelhoClaro, apagado},{vermelhoClaro, apagado, apagado,apagado, vermelhoClaro},{vermelhoClaro, apagado, vermelhoClaro,apagado, vermelhoClaro},{vermelhoClaro, apagado, apagado,apagado, vermelhoClaro},{apagado, vermelhoClaro, vermelhoClaro, vermelhoClaro,apagado}};
+    //Matriz que mostrará o um 
     Matriz_leds um =
-        {{apagado, apagado, azulClaro, apagado, apagado},
-        {apagado, azulClaro, azulClaro,apagado, apagado},
-        {apagado, apagado, azulClaro,apagado, apagado},
-        {apagado, apagado, azulClaro,apagado, apagado},
-        {azulClaro, azulClaro, azulClaro, azulClaro,azulClaro}};
-    //Matriz que mostrará o dois com transição de tonalidade da direita para a esquerda
+        {{apagado, apagado, azulClaro, apagado, apagado},{apagado, azulClaro, azulClaro,apagado, apagado},{apagado, apagado, azulClaro,apagado, apagado},{apagado, apagado, azulClaro,apagado, apagado},{azulClaro, azulClaro, azulClaro, azulClaro,azulClaro}};
+    //Matriz que mostrará o dois 
     Matriz_leds dois =
-        {{apagado, magentaForte, magentaForte, magentaForte, apagado},
-        {magentaForte, apagado, apagado,apagado, magentaForte},
-        {apagado, apagado, magentaForte,magentaForte, apagado},
-        {apagado, magentaForte, apagado,apagado, apagado},
-        {magentaForte, magentaForte, magentaForte, magentaForte,magentaForte}};
-    //Matriz que mostrará o três com transição de tonalidade da direita para a esquerda
+        {{apagado, magentaForte, magentaForte, magentaForte, apagado},{magentaForte, apagado, apagado,apagado, magentaForte},{apagado, apagado, magentaForte,magentaForte, apagado},{apagado, magentaForte, apagado,apagado, apagado},{magentaForte, magentaForte, magentaForte, magentaForte,magentaForte}};
+    //Matriz que mostrará o três 
     Matriz_leds tres =
-        {{apagado, azulForte, azulForte, azulForte, apagado},
-        {azulForte, apagado, apagado,apagado, azulForte},
-        {apagado, apagado, azulForte,azulForte, apagado},
-        {azulForte, apagado, apagado,apagado, azulForte},
-        {apagado, azulForte, azulForte, azulForte,apagado}};
-    //Matriz que mostrará o quatro com transição de tonalidade de cima para baixo
+        {{apagado, azulForte, azulForte, azulForte, apagado},{azulForte, apagado, apagado,apagado, azulForte},{apagado, apagado, azulForte,azulForte, apagado},{azulForte, apagado, apagado,apagado, azulForte},{apagado, azulForte, azulForte, azulForte,apagado}};
+    //Matriz que mostrará o quatro 
     Matriz_leds quatro =
-        {{apagado, apagado, apagado, marromClaro, apagado},
-        {apagado, apagado, marromClaro,marromClaro, apagado},
-        {apagado, marromClaro, apagado,marromClaro, apagado},
-        {marromClaro, marromClaro, marromClaro,marromClaro, marromClaro},
-        {apagado, apagado, apagado, marromClaro, apagado}};
-    //Matriz que mostrará o cinco com transição de tonalidade de baixo para cima
+        {{apagado, apagado, apagado, marromClaro, apagado},{apagado, apagado, marromClaro,marromClaro, apagado},{apagado, marromClaro, apagado,marromClaro, apagado},{marromClaro, marromClaro, marromClaro,marromClaro, marromClaro},{apagado, apagado, apagado, marromClaro, apagado}};
+    //Matriz que mostrará o cinco 
     Matriz_leds cinco =
-        {{azulClaro, azulClaro, azulClaro, azulClaro, apagado},
-        {azulClaro, apagado, apagado,apagado, apagado},
-        {azulClaro, azulClaro, azulClaro,azulClaro, apagado},
-        {apagado, apagado, apagado,apagado, azulClaro},
-        {azulClaro, azulClaro, azulClaro, azulClaro, apagado}};
-    //Matriz que mostrará o seis com transição de tonalidade de cima para baixo
+        {{azulClaro, azulClaro, azulClaro, azulClaro, apagado},{azulClaro, apagado, apagado,apagado, apagado},{azulClaro, azulClaro, azulClaro,azulClaro, apagado},{apagado, apagado, apagado,apagado, azulClaro},{azulClaro, azulClaro, azulClaro, azulClaro, apagado}};
+    //Matriz que mostrará o seis 
     Matriz_leds seis =
-        {{apagado, magentaClaro, magentaClaro, magentaClaro, apagado},
-        {magentaClaro, apagado, apagado,apagado, apagado},
-        {magentaClaro, magentaClaro, magentaClaro,magentaClaro, apagado},
-        {magentaClaro, apagado, apagado,apagado, magentaClaro},
-        {apagado, magentaClaro, magentaClaro, magentaClaro,apagado}};
-    //Matriz que mostrará o sete com transição de tonalidade de cima para baixo
+        {{apagado, magentaClaro, magentaClaro, magentaClaro, apagado},{magentaClaro, apagado, apagado,apagado, apagado},{magentaClaro, magentaClaro, magentaClaro,magentaClaro, apagado},{magentaClaro, apagado, apagado,apagado, magentaClaro},{apagado, magentaClaro, magentaClaro, magentaClaro,apagado}};
+    //Matriz que mostrará o sete 
     Matriz_leds sete =
-        {{verdeForte, verdeForte, verdeForte, verdeForte, verdeForte},
-        {apagado, apagado, apagado,apagado, verdeForte},
-        {apagado, apagado, apagado,verdeForte, apagado},
-        {apagado, apagado, verdeForte,apagado, apagado},
-        {apagado, apagado, verdeForte, apagado,apagado}};
-    //Matriz que mostrará o oito com transição de tonalidade de baixo para cima
+        {{verdeForte, verdeForte, verdeForte, verdeForte, verdeForte},{apagado, apagado, apagado,apagado, verdeForte},{apagado, apagado, apagado,verdeForte, apagado},{apagado, apagado, verdeForte,apagado, apagado},{apagado, apagado, verdeForte, apagado,apagado}};
+    //Matriz que mostrará o oito 
     Matriz_leds oito =
-        {{apagado, magentaForte, magentaForte, magentaForte, apagado},
-        {magentaForte, apagado, apagado,apagado, magentaForte},
-        {apagado, magentaForte, magentaForte,magentaForte, apagado},
-        {magentaForte, apagado, apagado,apagado, magentaForte},
-        {apagado, magentaForte, magentaForte, magentaForte, apagado}};
-    //Matriz que mostrará o nove com transição de tonalidade de cima para baixo
+        {{apagado, magentaForte, magentaForte, magentaForte, apagado},{magentaForte, apagado, apagado,apagado, magentaForte},{apagado, magentaForte, magentaForte,magentaForte, apagado},{magentaForte, apagado, apagado,apagado, magentaForte},{apagado, magentaForte, magentaForte, magentaForte, apagado}};
+    //Matriz que mostrará o nove 
     Matriz_leds nove =
-        {{apagado, marromForte, marromForte, marromForte, apagado},
-        {marromForte, apagado, apagado,apagado, marromForte},
-        {apagado, marromForte, marromForte,marromForte, marromForte},
-        {apagado, apagado, apagado,apagado, marromForte},
-        {apagado, marromForte, marromForte, marromForte, apagado}};
+        {{apagado, marromForte, marromForte, marromForte, apagado},{marromForte, apagado, apagado,apagado, marromForte},{apagado, marromForte, marromForte,marromForte, marromForte},{apagado, apagado, apagado,apagado, marromForte},{apagado, marromForte, marromForte, marromForte, apagado}};
 
     Matriz_leds limpar = 
-        {{apagado,apagado,apagado,apagado,apagado},
-        {apagado,apagado,apagado,apagado,apagado},
-        {apagado,apagado,apagado,apagado,apagado},
-        {apagado,apagado,apagado,apagado,apagado},
-        {apagado,apagado,apagado,apagado,apagado}};
-    //Laço de repetição para mostrar todos os frames na matriz de Leds
-        switch(numero){
-            case '0':
-                    acender_leds(zero);
-                break;
-            case '1':
-                    acender_leds(um);
-                break;
-            case '2':
-                    acender_leds(dois);
-                break;
-            case '3':
-                    acender_leds(tres);
-                break;
-            case '4':
-                    acender_leds(quatro);
-                break;
-            case '5':
-                    acender_leds(cinco);
-                    break;
-            case '6':
-                    acender_leds(seis);
-                    break;
-            case '7':
-                    acender_leds(sete);
-                    break;
-            case '8':
-                    acender_leds(oito);
-                    break;
-            case '9': 
-                    acender_leds(nove);
-                    break;
-            default:
-                acender_leds(limpar);
-                break;
-            }; 
+        {{apagado,apagado,apagado,apagado,apagado},{apagado,apagado,apagado,apagado,apagado},{apagado,apagado,apagado,apagado,apagado},{apagado,apagado,apagado,apagado,apagado},{apagado,apagado,apagado,apagado,apagado}};
 
+    //Laço de repetição para mostrar todos os frames na matriz de Leds
+    if(!strcmp(numero, "0")){
+        acender_leds(zero);
+    }else if(!strcmp(numero, "1")){
+        acender_leds(um);
+    }else if(!strcmp(numero, "2")){
+        acender_leds(dois);
+    }else if(!strcmp(numero, "3")){
+        acender_leds(tres);
+    }else if(!strcmp(numero, "4")){
+        acender_leds(quatro);
+    }else if(!strcmp(numero, "5")){
+        acender_leds(cinco);
+    }else if(!strcmp(numero, "6")){
+        acender_leds(seis);
+    }else if(!strcmp(numero, "7")){
+        acender_leds(sete);
+    }else if(!strcmp(numero, "8")){
+        acender_leds(oito);
+    }else if(!strcmp(numero, "9")){
+        acender_leds(nove);
+    }else {
+        acender_leds(limpar);
+    };
 };
 
-//Função para mostrar no display 
+//Função para limpar display
 void limpar_display(){
-    bool cor = true;
+    bool cor = true; //Controla cor do display para o fundo contrastar com letra
     cor = !cor;
-    // Atualiza o conteúdo do display com animações
     ssd1306_fill(&ssd, !cor); // Limpa o display
 }
 
-void mensagem_display(char mensagem[], char mensagem2[], char c){
-    bool cor = true;
+//Função para mostrar mensagem no display
+void mensagem_display(char mensagem[], char mensagem2[]){
+    bool cor = true;    //Controla cor do display para o fundo contrastar com letra
     cor = !cor;
     ssd1306_rect(&ssd, 3, 3, 122, 58, cor, !cor); // Desenha um retângulo
-    ssd1306_draw_string(&ssd, mensagem, 8, 10); // Desenha uma string 
-    if(c=='\0'){
-        ssd1306_draw_string(&ssd, mensagem2, 30, 30); // Desenha uma string
-    }else{
-        ssd1306_draw_char(&ssd, c, 35, 35);
-    } 
+    ssd1306_draw_string(&ssd, mensagem, 8, 10); // Desenha a primeira string 
+    ssd1306_draw_string(&ssd, mensagem2, 30, 30); // Desenha a segunda string
     ssd1306_send_data(&ssd); // Atualiza o display
 };
 
-
+void led_vermelho(){ //Picar led Vermelho ao mostrar nova mensagem
+    gpio_put(LedR,1);
+    sleep_ms(1000);
+    gpio_put(LedR,0);
+};
 
 // Prototipo da função de interrupção
 static void interrupcao_Botao(uint gpio, uint32_t events);
 
 int main()
 {
-    stdio_init_all();
+    stdio_init_all();   //Inicializa comunicação padrão
 
-    config_pinos();
+    config_pinos(); //Função que configura e inicializa os pinos de leds e botões
 
-    char mensagem = '\0';
-    char frase[15];
-    char frase2[15];
+    int i = 0;      //Contador para percorrer string
+    char c;         //Ler caracteres da string
+    char frase[15]; //Strings para armazenar mensagem que serão exibidas
+    char frase2[20];
     //Configurações para matriz de leds
     uint offset = pio_add_program(pio, &pio_matrix_program);
     pio_matrix_program_init(pio, sm, offset, MatrizLeds, 800000, IS_RGBW);
 
-      // I2C Initialisation. Using it at 400Khz.
+      // Inicializando comunicação I2C
     i2c_init(I2C_PORT, 400 * 1000);
 
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Set the GPIO pin function to I2C
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Set the GPIO pin function to I2C
-    gpio_pull_up(I2C_SDA); // Pull up the data line
-    gpio_pull_up(I2C_SCL); // Pull up the clock line
-    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT); // Inicializa o display
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Configura pino SDA para I2C
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Configura pino SCL para I2C
+    gpio_pull_up(I2C_SDA); // estabelece sda como pull-up
+    gpio_pull_up(I2C_SCL); // estabelece sda como pull-up
+
+    // Inicializa o display
+    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT); 
     ssd1306_config(&ssd); // Configura o display
     ssd1306_send_data(&ssd); // Envia os dados para o display
     
-    // Limpa o display. O display inicia com todos os pixels apagados.
-    ssd1306_fill(&ssd, false);
-    ssd1306_send_data(&ssd);
+    // Apresenta uma mensagem inicial no display
+    limpar_display();
+    strcpy(frase,"Oi");
+    strcpy(frase2, "Espero que goste"); 
+    mensagem_display(frase, frase2);
 
     // Configuração da interrupção com callback
     gpio_set_irq_enabled_with_callback(ButtonA, GPIO_IRQ_EDGE_FALL, true, &interrupcao_Botao);
     gpio_set_irq_enabled_with_callback(ButtonB, GPIO_IRQ_EDGE_FALL, true, &interrupcao_Botao);
 
     while (true) {
-        printf("\nDigite um caractere:");
-        //scanf("%c",&mensagem);
-        printf("\nVocê digitou: %c\n", mensagem);
-        numeros(mensagem);
+
+        //Aviso sobre end lining
+        printf("\nAVISO: HABILITE END LINING (LF)\n");
+
+        //Mensagem vista apenas no menitor serial
+        printf("\nDigite uma palavra ou frase de até 8 caracteres: \n OBS: Sem acentuação ou pontuação\n");
+        
+        memset(frase2, '\0', sizeof(frase2)); //Garante que a string vai estar limpa para próxima leitura
+        i = 0;  // Reinicia o índice da string
+
+        while(i!=9){ //While para ler até o ponto de parada
+            scanf("%c", &c);      //Ler cada caractere da string
+            if (c == '\n') {
+                frase2[i] = '\0';  // Finaliza a string com o caractere nulo
+                i=9;               //Finaliza while
+            } 
+            else if (i < sizeof(frase2) - 1) {
+                frase2[i] = c;  // Armazena o caractere na string
+                i++;            //Incrmenta o índice
+            };
+        };
+
+        printf("\n\tVocê digitou: %s\n", frase2); //Mostra o que foi digitado no monitor serial
         limpar_display();
-        strcpy(frase,"LETRA DIGITADA");
-        strcpy(frase2,"Aghijklmnoa");
-        mensagem_display(frase, frase2, mensagem);
-        sleep_ms(1000);
+        strcpy(frase,"SUA MENSAGEM");           //Mensagem no display que acompanha o que foi digitado
+        numeros(frase2);                        //Chama função que verifica se um número foi digitado
+        mensagem_display(frase, frase2);        //Chama função que exibe as frases no display
+        led_vermelho();                         //Pica led_vermelho para indicar nova mensagem
     };
 };
 
+//Função chamada na interrupção do botão
 void interrupcao_Botao (uint gpio, uint32_t events)
 {
     // Obtém o tempo atual em microssegundos
     uint32_t tempo_atual = to_us_since_boot(get_absolute_time());
-    bool state_ledVerde = gpio_get(LedG);
-    bool state_ledAzul = gpio_get(LedB);
+    bool state_ledVerde = gpio_get(LedG);   //Variável que armazena o estado do led verde
+    bool state_ledAzul = gpio_get(LedB);    //Variável que armazena o estado do led azul
 
     if (tempo_atual - tempo_anterior > 300000) // 200 ms de debouncing
     {
         tempo_anterior = tempo_atual; // Atualiza o tempo do último evento
-        char mensagem = '\0';
-        char frase[15];
+        
+        char frase[15];             //Strings para mostrar no display
         char frase2[15];
 
         if(gpio==ButtonA){              //Verifica qual botão foi pressionado
@@ -333,17 +318,17 @@ void interrupcao_Botao (uint gpio, uint32_t events)
             gpio_put(LedG, !state_ledVerde);          //Alterna estado do led verde
             limpar_display();
             if(state_ledVerde){
-                //Mostrar mensagem LED VERDE DESLIGADO
+                //Mostrar mensagem LED VERDE DESLIGADO no monitor e no display
                 printf("Led Verde desligado\n\n");
                 strcpy(frase,"LED VERDE");
                 strcpy(frase2,"DESLIGADO");
-                mensagem_display(frase, frase2, mensagem);
+                mensagem_display(frase, frase2);
             }else{
-                //Mostrar mensagem LED VERDE LIGADO
-                printf("Led Verde ligado\n\n");
+                //Mostrar mensagem LED VERDE LIGADO no monitor e no display
+                printf("Led Verde ligado\n\n"); 
                 strcpy(frase,"LED VERDE");
                 strcpy(frase2,"LIGADO");
-                mensagem_display(frase, frase2, mensagem);
+                mensagem_display(frase, frase2);
             };
 
         }else{
@@ -353,19 +338,18 @@ void interrupcao_Botao (uint gpio, uint32_t events)
             gpio_put(LedB, !state_ledAzul);          //Alterna estado do led azul
             limpar_display();
             if(state_ledAzul){
-                //Mostrar mensagem LED AZUL DESLIGADO
+                //Mostrar mensagem LED AZUL DESLIGADO no monitor e no display
                 printf("Led Azul desligado\n\n");
                 strcpy(frase,"LED AZUL");
                 strcpy(frase2,"DESLIGADO");
-                mensagem_display(frase, frase2, mensagem);
+                mensagem_display(frase, frase2);
             }else{
-                //Mostrar mensagem LED AZUL LIGADO
+                //Mostrar mensagem LED AZUL LIGADO no monitor e no display
                 printf("Led Azul ligado\n\n");
                 strcpy(frase,"LED AZUL");
                 strcpy(frase2,"LIGADO");
-                mensagem_display(frase, frase2, mensagem);
+                mensagem_display(frase, frase2);
             };
         };
-        printf("\nDigite um caractere:");
     };
 };

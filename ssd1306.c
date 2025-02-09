@@ -1,5 +1,6 @@
 #include "ssd1306.h"
 #include "font.h"
+#include <string.h>
 
 void ssd1306_init(ssd1306_t *ssd, uint8_t width, uint8_t height, bool external_vcc, uint8_t address, i2c_inst_t *i2c) {
   ssd->width = width;
@@ -182,7 +183,8 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
 // Função para desenhar uma string
 void ssd1306_draw_string(ssd1306_t *ssd, const char *str, uint8_t x, uint8_t y)
 {
-  while (*str)
+  int i = strlen (str);
+  while (*str && i!=0)
   {
     ssd1306_draw_char(ssd, *str++, x, y);
     x += 8;
@@ -195,5 +197,6 @@ void ssd1306_draw_string(ssd1306_t *ssd, const char *str, uint8_t x, uint8_t y)
     {
       break;
     }
+    i--;
   }
 }
