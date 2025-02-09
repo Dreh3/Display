@@ -24,7 +24,7 @@ __As funcionalidade básicas especificadas para a atividade são:__
 5) Mensagens no diplay e no Serial Monitor.
 
 
-__Uma breve explicação do desenvolvimento e resultados obtidos podem ser vistos no vídeo endereçado no seguine link: [Aplicação de Interaces de Comunicação Serial]().__
+__Uma breve explicação do desenvolvimento e resultados obtidos podem ser vistos no vídeo endereçado no seguine link: [Aplicação de Interaces de Comunicação Serial](https://youtu.be/G0G2UHMJdV8?si=dBe-2z5vWocDKS_s).__
 
 ## Detalhamento Do Projeto
 
