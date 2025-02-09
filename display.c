@@ -301,11 +301,12 @@ int main()
 
     while (true) {
         printf("\nDigite um caractere:");
-        scanf("%c",&mensagem);
+        //scanf("%c",&mensagem);
         printf("\nVocê digitou: %c\n", mensagem);
         numeros(mensagem);
         limpar_display();
         strcpy(frase,"LETRA DIGITADA");
+        strcpy(frase2,"Aghijklmnoa");
         mensagem_display(frase, frase2, mensagem);
         sleep_ms(1000);
     };
